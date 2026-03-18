@@ -126,8 +126,10 @@ class ClaudePiece:
 
         if not self.mpv.is_running():
             self.mpv.launch(episode)
-            if self.playback["position"] > 0:
-                self.mpv.seek(self.playback["position"])
+
+        # Always seek to saved position on resume
+        if self.playback["position"] > 0:
+            self.mpv.seek(self.playback["position"])
 
         self.mpv.unminimize()
         self.mpv.resume()
