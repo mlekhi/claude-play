@@ -175,6 +175,10 @@ class ClaudePiece:
         observer.start()
 
         print("claude-piece daemon running. Watching for Claude Code sessions...")
+        sessions = self.session_mgr.get_sessions()
+        if sessions:
+            states = [f"{s['session_id'][:8]}={s['state']}" for s in sessions]
+            print(f"Found {len(sessions)} existing session(s): {', '.join(states)}")
         self.evaluate()  # Initial check
 
         def shutdown(sig, frame):
@@ -193,6 +197,7 @@ class ClaudePiece:
 
         while True:
             self._check_episode_advance()
+            self.evaluate()  # Re-evaluate periodically in case events were missed
             time.sleep(2)
 
 
