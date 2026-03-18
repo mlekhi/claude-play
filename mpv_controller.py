@@ -12,11 +12,14 @@ class MpvController:
         self.sock = None
         self.process = None
         self._buf = b""
+        self._launching = False
 
     def launch(self, filepath):
         """Launch mpv with IPC enabled, playing the given file."""
         if self.process and self.process.poll() is None:
             return  # already running
+
+        self._launching = True
 
         # Clean up stale socket
         if os.path.exists(self.SOCKET_PATH):
@@ -28,7 +31,6 @@ class MpvController:
             "--no-terminal",
             "--force-window=yes",
             "--keep-open=yes",
-            "--pause",
             filepath,
         ])
 
@@ -39,6 +41,15 @@ class MpvController:
             time.sleep(0.1)
 
         self._connect()
+
+        # Verify connection works by sending a test command
+        for _ in range(10):
+            resp = self._send(["get_property", "pause"])
+            if resp and resp.get("error") == "success":
+                break
+            time.sleep(0.2)
+
+        self._launching = False
 
     def _connect(self):
         """Connect to the mpv IPC socket."""

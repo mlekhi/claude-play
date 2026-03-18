@@ -94,6 +94,10 @@ class ClaudePiece:
 
     def evaluate(self):
         """Check session states and play/pause accordingly."""
+        # Skip if mpv is mid-launch to avoid double-open
+        if self.mpv._launching:
+            return
+
         # Periodic stale cleanup
         now = time.time()
         if now - self.last_cleanup > 60:
