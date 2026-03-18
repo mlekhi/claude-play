@@ -138,3 +138,7 @@ replace `/absolute/path/to/` with the actual path where you cloned this repo.
 ```
 
 each session file contains `{"state": "busy"|"idle"|"prompting", ...}`. the daemon watches this directory for changes and reacts instantly via [watchdog](https://github.com/gorakhargosh/watchdog). stale sessions (crashed without cleanup) are automatically pruned.
+
+---
+
+personally i use this to watch [one pace](https://onepace.net) while coding. highly recommend.
