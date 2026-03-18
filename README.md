@@ -1,17 +1,17 @@
-# claude-piece
+# claude-play
 
-watches all your claude code sessions. when every session is busy (thinking/working), it plays an episode of one pace. pauses instantly when any session needs your input.
+watches all your claude code sessions. plays videos when every session is idle — pauses instantly when any session needs your input.
 
 ```
 ┌─────────────────┐     state files      ┌──────────────┐    IPC socket    ┌─────┐
-│ claude code cli │ ──── hooks ────────▶  │ claude-piece  │ ──────────────▶ │ mpv │
-│ (n sessions)    │   write to disk       │   daemon      │  pause/resume   │     │
+│ claude code cli │ ──── hooks ────────▶  │  claude-play  │ ──────────────▶ │ mpv │
+│ (n sessions)    │   write to disk       │    daemon     │  pause/resume   │     │
 └─────────────────┘                       └──────────────┘                  └─────┘
 ```
 
 ## how it works
 
-claude code fires hooks on lifecycle events. `claude-piece` listens:
+claude code fires hooks on lifecycle events. `claude-play` listens:
 
 | event | what happens | effect |
 |---|---|---|
@@ -26,6 +26,23 @@ otherwise → video plays.
 
 your playback position is saved between pauses and across restarts.
 
+## supported video sources
+
+mpv handles playback, so anything mpv can play works:
+
+| source | example |
+|---|---|
+| local files | `/path/to/videos/*.mp4` |
+| direct file urls | `https://example.com/video.mp4` |
+| pixeldrain | `https://pixeldrain.net/api/file/<id>` |
+| youtube | `https://youtube.com/watch?v=...` (needs yt-dlp) |
+| twitch vods | `https://twitch.tv/videos/...` (needs yt-dlp) |
+| gdrive (public) | `https://drive.google.com/file/d/<id>/view` |
+| hls streams | `https://example.com/stream.m3u8` |
+| any direct url | if it ends in `.mp4`, `.mkv`, `.webm`, etc. — it works |
+
+**tip:** for sites like youtube/twitch, install [yt-dlp](https://github.com/yt-dlp/yt-dlp) and mpv will use it automatically.
+
 ## prerequisites
 
 - python 3
@@ -36,23 +53,23 @@ your playback position is saved between pauses and across restarts.
 
 ```bash
 # 1. clone and install
-git clone https://github.com/mlekhi/claude-piece.git
-cd claude-piece
+git clone https://github.com/mlekhi/claude-play.git
+cd claude-play
 bash install.sh
 
-# 2. configure your episodes
-# edit ~/.claude-piece/config.json (see config section below)
+# 2. configure your videos
+# edit ~/.claude-play/config.json (see config section below)
 
 # 3. add hooks to claude code
 # the install script prints the exact json — paste it into ~/.claude/settings.json
 
 # 4. run the daemon
-.venv/bin/python claude_piece.py
+.venv/bin/python claude_play.py
 ```
 
 ## config
 
-edit `~/.claude-piece/config.json`:
+edit `~/.claude-play/config.json`:
 
 ### stream urls (no downloads needed)
 
@@ -67,14 +84,14 @@ edit `~/.claude-piece/config.json`:
 }
 ```
 
-paste video urls from wherever you watch one pace. mpv streams them directly — nothing gets downloaded.
+paste video urls from wherever you watch. mpv streams them directly — nothing gets downloaded.
 
 ### local files
 
 ```json
 {
   "source": "directory",
-  "path": "/path/to/one-pace-episodes/",
+  "path": "/path/to/videos/",
   "mode": "idle"
 }
 ```
@@ -88,12 +105,12 @@ the install script outputs this for you, but for reference — add to `~/.claude
 ```json
 {
   "hooks": {
-    "UserPromptSubmit": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-piece-hook.sh busy"}]}],
-    "PostToolUse": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-piece-hook.sh busy"}]}],
-    "Stop": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-piece-hook.sh idle"}]}],
-    "PermissionRequest": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-piece-hook.sh prompting"}]}],
-    "SessionStart": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-piece-hook.sh start"}]}],
-    "SessionEnd": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-piece-hook.sh end"}]}]
+    "UserPromptSubmit": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-play-hook.sh busy"}]}],
+    "PostToolUse": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-play-hook.sh busy"}]}],
+    "Stop": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-play-hook.sh idle"}]}],
+    "PermissionRequest": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-play-hook.sh prompting"}]}],
+    "SessionStart": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-play-hook.sh start"}]}],
+    "SessionEnd": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-play-hook.sh end"}]}]
   }
 }
 ```
@@ -112,8 +129,8 @@ replace `/absolute/path/to/` with the actual path where you cloned this repo.
 ## how state tracking works
 
 ```
-~/.claude-piece/
-├── config.json          # your episode config
+~/.claude-play/
+├── config.json          # your video config
 ├── playback.json        # current episode + position (auto-managed)
 └── sessions/
     ├── <session-id>.json  # one file per active claude code session

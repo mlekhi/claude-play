@@ -1,12 +1,12 @@
 #!/bin/bash
-# claude-piece-hook.sh — Claude Code hook that tracks session state
-# Usage: claude-piece-hook.sh <state>
+# claude-play-hook.sh — Claude Code hook that tracks session state
+# Usage: claude-play-hook.sh <state>
 # Where state is: busy, active, start, end
 #
 # Receives JSON on stdin from Claude Code with session_id, etc.
 
 STATE="$1"
-SESSIONS_DIR="$HOME/.claude-piece/sessions"
+SESSIONS_DIR="$HOME/.claude-play/sessions"
 mkdir -p "$SESSIONS_DIR"
 
 # Read JSON from stdin — extract session_id without spawning python

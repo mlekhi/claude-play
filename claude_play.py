@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""claude-piece: Watch Claude Code sessions, play One Pace when all are busy."""
+"""claude-play: Watch Claude Code sessions, play videos when all are idle."""
 
 import json
 import os
@@ -15,7 +15,7 @@ from mpv_controller import MpvController
 from session_manager import SessionManager
 
 
-CONFIG_DIR = os.path.expanduser("~/.claude-piece")
+CONFIG_DIR = os.path.expanduser("~/.claude-play")
 CONFIG_FILE = os.path.join(CONFIG_DIR, "config.json")
 PLAYBACK_FILE = os.path.join(CONFIG_DIR, "playback.json")
 
@@ -183,7 +183,7 @@ class ClaudePiece:
         observer.schedule(handler, self.session_mgr.sessions_dir, recursive=False)
         observer.start()
 
-        print("claude-piece daemon running. Watching for Claude Code sessions...")
+        print("claude-play daemon running. Watching for Claude Code sessions...")
         sessions = self.session_mgr.get_sessions()
         if sessions:
             states = [f"{s['session_id'][:8]}={s['state']}" for s in sessions]

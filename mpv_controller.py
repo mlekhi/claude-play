@@ -6,7 +6,7 @@ import time
 
 
 class MpvController:
-    SOCKET_PATH = "/tmp/claude-piece-mpv.sock"
+    SOCKET_PATH = "/tmp/claude-play-mpv.sock"
 
     def __init__(self):
         self.sock = None

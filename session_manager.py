@@ -6,7 +6,7 @@ import time
 
 class SessionManager:
     def __init__(self, sessions_dir=None):
-        self.sessions_dir = sessions_dir or os.path.expanduser("~/.claude-piece/sessions")
+        self.sessions_dir = sessions_dir or os.path.expanduser("~/.claude-play/sessions")
         os.makedirs(self.sessions_dir, exist_ok=True)
 
     def get_sessions(self):

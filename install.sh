@@ -1,13 +1,13 @@
 #!/bin/bash
-# install.sh — Set up claude-piece hooks and config
+# install.sh — Set up claude-play hooks and config
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-HOOK_PATH="$SCRIPT_DIR/claude-piece-hook.sh"
+HOOK_PATH="$SCRIPT_DIR/claude-play-hook.sh"
 CLAUDE_SETTINGS="$HOME/.claude/settings.json"
-CONFIG_DIR="$HOME/.claude-piece"
+CONFIG_DIR="$HOME/.claude-play"
 
-echo "=== claude-piece installer ==="
+echo "=== claude-play installer ==="
 
 # Set up venv and install deps
 VENV_DIR="$SCRIPT_DIR/.venv"
@@ -34,7 +34,7 @@ if [ ! -f "$CONFIG_DIR/config.json" ]; then
 }
 CONF
     echo "Created default config at $CONFIG_DIR/config.json"
-    echo "  -> Edit the 'path' to point to your One Pace episodes!"
+    echo "  -> Edit the 'path' to point to your your video files!"
 fi
 
 # Show hooks to add
@@ -55,4 +55,4 @@ cat <<EOF
 EOF
 
 echo ""
-echo "Done! Run: $VENV_DIR/bin/python $SCRIPT_DIR/claude_piece.py"
+echo "Done! Run: $VENV_DIR/bin/python $SCRIPT_DIR/claude_play.py"
