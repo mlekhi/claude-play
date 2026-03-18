@@ -24,6 +24,8 @@ claude code fires hooks on lifecycle events. `claude-play` listens:
 when **any** session is prompting for input → video pauses and minimizes instantly.
 otherwise → video plays.
 
+if you escape a permission dialog without responding, the video resumes after ~10 seconds.
+
 your playback position is saved between pauses and across restarts.
 
 ## supported video sources

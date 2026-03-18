@@ -46,7 +46,7 @@ class SessionManager:
             return True
         return all(s.get("state") == "busy" for s in sessions)
 
-    def any_prompting(self, max_age=30):
+    def any_prompting(self, max_age=10):
         """Return True if any session is prompting for user input.
         Ignores prompting states older than max_age seconds (escaped dialogs)."""
         now = time.time()
