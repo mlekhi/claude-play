@@ -126,18 +126,23 @@ class MpvController:
         return self.process is not None and self.process.poll() is None
 
     def minimize(self):
-        subprocess.run([
-            "osascript", "-e",
-            'tell application "System Events" to tell process "mpv" '
-            'to set value of attribute "AXMinimized" of every window to true'
-        ], capture_output=True)
+        # Try mpv IPC first (instant), fall back to osascript (async)
+        resp = self._send(["set_property", "window-minimized", True])
+        if not resp or resp.get("error") != "success":
+            subprocess.Popen([
+                "osascript", "-e",
+                'tell application "System Events" to tell process "mpv" '
+                'to set value of attribute "AXMinimized" of every window to true'
+            ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     def unminimize(self):
-        subprocess.run([
-            "osascript", "-e",
-            'tell application "System Events" to tell process "mpv" '
-            'to set value of attribute "AXMinimized" of every window to false'
-        ], capture_output=True)
+        resp = self._send(["set_property", "window-minimized", False])
+        if not resp or resp.get("error") != "success":
+            subprocess.Popen([
+                "osascript", "-e",
+                'tell application "System Events" to tell process "mpv" '
+                'to set value of attribute "AXMinimized" of every window to false'
+            ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     def quit(self):
         self._send(["quit"])

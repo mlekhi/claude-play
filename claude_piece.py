@@ -200,7 +200,7 @@ class ClaudePiece:
         while True:
             self._check_episode_advance()
             self.evaluate()  # Re-evaluate periodically in case events were missed
-            time.sleep(0.5)
+            time.sleep(0.2)
 
 
 if __name__ == "__main__":
