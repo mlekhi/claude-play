@@ -6,7 +6,7 @@ import os
 import sys
 import signal
 import time
-import glob
+import threading
 
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
@@ -84,6 +84,7 @@ class ClaudePiece:
         self.mpv = MpvController()
         self.playing = False
         self.last_cleanup = time.time()
+        self._lock = threading.Lock()
 
         if not self.episodes:
             print("No episodes found. Check your config.")
@@ -94,32 +95,38 @@ class ClaudePiece:
 
     def evaluate(self):
         """Check session states and play/pause accordingly."""
-        # Skip if mpv is mid-launch to avoid double-open
-        if self.mpv._launching:
-            return
+        if not self._lock.acquire(blocking=False):
+            return  # Another thread is already evaluating
 
-        # Periodic stale cleanup
-        now = time.time()
-        if now - self.last_cleanup > 60:
-            self.session_mgr.cleanup_stale()
-            self.last_cleanup = now
+        try:
+            # Skip if mpv is mid-launch to avoid double-open
+            if self.mpv._launching:
+                return
 
-        mode = self.config.get("mode", "idle")
+            # Periodic stale cleanup
+            now = time.time()
+            if now - self.last_cleanup > 60:
+                self.session_mgr.cleanup_stale()
+                self.last_cleanup = now
 
-        if mode == "idle":
-            # Play unless any session is prompting for input
-            should_play = not self.session_mgr.any_prompting()
-        else:
-            # always-busy: play only when all sessions are busy
-            all_busy = self.session_mgr.all_busy()
-            has_sessions = self.session_mgr.has_sessions()
-            play_no_sessions = self.config.get("play_when_no_sessions", True)
-            should_play = all_busy and (has_sessions or play_no_sessions)
+            mode = self.config.get("mode", "idle")
 
-        if should_play and not self.playing:
-            self._start_playing()
-        elif not should_play and self.playing:
-            self._stop_playing()
+            if mode == "idle":
+                # Play unless any session is prompting for input
+                should_play = not self.session_mgr.any_prompting()
+            else:
+                # always-busy: play only when all sessions are busy
+                all_busy = self.session_mgr.all_busy()
+                has_sessions = self.session_mgr.has_sessions()
+                play_no_sessions = self.config.get("play_when_no_sessions", True)
+                should_play = all_busy and (has_sessions or play_no_sessions)
+
+            if should_play and not self.playing:
+                self._start_playing()
+            elif not should_play and self.playing:
+                self._stop_playing()
+        finally:
+            self._lock.release()
 
     def _start_playing(self):
         idx = self.playback["episode_index"]
