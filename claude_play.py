@@ -84,6 +84,7 @@ class ClaudePiece:
         self.mpv = MpvController()
         self.playing = False
         self.last_cleanup = time.time()
+        self._last_paused = 0
         self._lock = threading.Lock()
 
         if not self.episodes:
@@ -122,6 +123,8 @@ class ClaudePiece:
                 should_play = all_busy and (has_sessions or play_no_sessions)
 
             if should_play and not self.playing:
+                if time.time() - self._last_paused < 1:
+                    return  # Cooldown: avoid flickering during permission series
                 self._start_playing()
             elif not should_play and self.playing:
                 self._stop_playing()
@@ -156,6 +159,7 @@ class ClaudePiece:
                 save_playback(self.playback)
 
         self.playing = False
+        self._last_paused = time.time()
         print("Paused — session needs input")
 
     def _check_episode_advance(self):
