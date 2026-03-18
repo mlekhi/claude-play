@@ -131,11 +131,7 @@ class ClaudePiece:
         print(f"Playing: {os.path.basename(episode)}")
 
         if not self.mpv.is_running():
-            self.mpv.launch(episode)
-
-        # Always seek to saved position on resume
-        if self.playback["position"] > 0:
-            self.mpv.seek(self.playback["position"])
+            self.mpv.launch(episode, start_position=self.playback["position"])
 
         self.mpv.unminimize()
         self.mpv.resume()

@@ -14,7 +14,7 @@ class MpvController:
         self._buf = b""
         self._launching = False
 
-    def launch(self, filepath):
+    def launch(self, filepath, start_position=0):
         """Launch mpv with IPC enabled, playing the given file."""
         if self.process and self.process.poll() is None:
             return  # already running
@@ -25,14 +25,18 @@ class MpvController:
         if os.path.exists(self.SOCKET_PATH):
             os.unlink(self.SOCKET_PATH)
 
-        self.process = subprocess.Popen([
+        cmd = [
             "mpv",
             f"--input-ipc-server={self.SOCKET_PATH}",
             "--no-terminal",
             "--force-window=yes",
             "--keep-open=yes",
-            filepath,
-        ])
+        ]
+        if start_position > 0:
+            cmd.append(f"--start={start_position}")
+        cmd.append(filepath)
+
+        self.process = subprocess.Popen(cmd)
 
         # Wait for socket to appear
         for _ in range(50):
