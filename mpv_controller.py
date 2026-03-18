@@ -64,7 +64,7 @@ class MpvController:
                 pass
         self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         self.sock.connect(self.SOCKET_PATH)
-        self.sock.settimeout(1.0)
+        self.sock.settimeout(0.3)
         self._buf = b""
 
     def _send(self, command):

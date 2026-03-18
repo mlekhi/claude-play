@@ -139,14 +139,14 @@ class ClaudePiece:
 
     def _stop_playing(self):
         if self.mpv.is_running():
-            # Save position before pausing
+            # Pause + hide immediately, then save position
+            self.mpv.pause()
+            self.mpv.minimize()
+
             pos = self.mpv.get_position()
             if pos:
                 self.playback["position"] = pos
                 save_playback(self.playback)
-
-            self.mpv.pause()
-            self.mpv.minimize()
 
         self.playing = False
         print("Paused — session needs input")
