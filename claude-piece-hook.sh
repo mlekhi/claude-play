@@ -9,9 +9,9 @@ STATE="$1"
 SESSIONS_DIR="$HOME/.claude-piece/sessions"
 mkdir -p "$SESSIONS_DIR"
 
-# Read JSON from stdin
+# Read JSON from stdin — extract session_id without spawning python
 INPUT=$(cat)
-SESSION_ID=$(echo "$INPUT" | python3 -c "import sys,json; print(json.load(sys.stdin)['session_id'])" 2>/dev/null)
+SESSION_ID=$(echo "$INPUT" | grep -o '"session_id":"[^"]*"' | head -1 | cut -d'"' -f4)
 
 if [ -z "$SESSION_ID" ]; then
     exit 0
