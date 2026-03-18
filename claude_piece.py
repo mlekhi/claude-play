@@ -104,11 +104,17 @@ class ClaudePiece:
             self.session_mgr.cleanup_stale()
             self.last_cleanup = now
 
-        all_busy = self.session_mgr.all_busy()
-        has_sessions = self.session_mgr.has_sessions()
-        play_no_sessions = self.config.get("play_when_no_sessions", True)
+        mode = self.config.get("mode", "idle")
 
-        should_play = all_busy and (has_sessions or play_no_sessions)
+        if mode == "idle":
+            # Play unless any session is prompting for input
+            should_play = not self.session_mgr.any_prompting()
+        else:
+            # always-busy: play only when all sessions are busy
+            all_busy = self.session_mgr.all_busy()
+            has_sessions = self.session_mgr.has_sessions()
+            play_no_sessions = self.config.get("play_when_no_sessions", True)
+            should_play = all_busy and (has_sessions or play_no_sessions)
 
         if should_play and not self.playing:
             self._start_playing()

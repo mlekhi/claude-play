@@ -15,14 +15,14 @@ claude code fires hooks on lifecycle events. `claude-piece` listens:
 
 | event | what happens | effect |
 |---|---|---|
-| you hit enter | session marked `busy` | video plays |
+| you hit enter | session marked `busy` | video keeps playing |
 | tool finishes running | session marked `busy` | video keeps playing |
-| claude asks for permission | session marked `active` | video pauses + hides |
-| claude finishes | session marked `active` | video pauses + hides |
+| claude asks for permission | session marked `prompting` | video pauses + hides |
+| claude finishes | session marked `idle` | video keeps playing |
 | session closes | session file deleted | adjusts automatically |
 
-when **all** sessions are busy (or none exist) → video plays.
-when **any** session needs your input → video pauses and minimizes instantly.
+when **any** session is prompting for input → video pauses and minimizes instantly.
+otherwise → video plays.
 
 your playback position is saved between pauses and across restarts.
 
@@ -63,7 +63,7 @@ edit `~/.claude-piece/config.json`:
     "https://your-video-url.com/episode1.mp4",
     "https://your-video-url.com/episode2.mp4"
   ],
-  "play_when_no_sessions": true
+  "mode": "idle"
 }
 ```
 
@@ -75,7 +75,7 @@ paste video urls from wherever you watch one pace. mpv streams them directly —
 {
   "source": "directory",
   "path": "/path/to/one-pace-episodes/",
-  "play_when_no_sessions": true
+  "mode": "idle"
 }
 ```
 
@@ -90,8 +90,8 @@ the install script outputs this for you, but for reference — add to `~/.claude
   "hooks": {
     "UserPromptSubmit": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-piece-hook.sh busy"}]}],
     "PostToolUse": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-piece-hook.sh busy"}]}],
-    "Stop": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-piece-hook.sh active"}]}],
-    "Notification": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-piece-hook.sh active"}]}],
+    "Stop": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-piece-hook.sh idle"}]}],
+    "Notification": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-piece-hook.sh prompting"}]}],
     "SessionStart": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-piece-hook.sh start"}]}],
     "SessionEnd": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-piece-hook.sh end"}]}]
   }
@@ -107,7 +107,7 @@ replace `/absolute/path/to/` with the actual path where you cloned this repo.
 | `source` | `"directory"` | `"directory"` for local files, `"urls"` for streaming |
 | `path` | — | path to episode folder (directory mode) |
 | `urls` | `[]` | list of video urls (urls mode) |
-| `play_when_no_sessions` | `true` | play video even when no claude code sessions exist |
+| `mode` | `"idle"` | `"idle"` = play unless prompting, `"always-busy"` = play only when all sessions are busy |
 
 ## how state tracking works
 
@@ -120,4 +120,4 @@ replace `/absolute/path/to/` with the actual path where you cloned this repo.
     └── ...
 ```
 
-each session file contains `{"state": "busy"|"active", ...}`. the daemon watches this directory for changes and reacts instantly via [watchdog](https://github.com/gorakhargosh/watchdog). stale sessions (crashed without cleanup) are automatically pruned.
+each session file contains `{"state": "busy"|"idle"|"prompting", ...}`. the daemon watches this directory for changes and reacts instantly via [watchdog](https://github.com/gorakhargosh/watchdog). stale sessions (crashed without cleanup) are automatically pruned.

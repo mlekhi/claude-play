@@ -23,8 +23,11 @@ case "$STATE" in
     busy)
         echo "{\"state\": \"busy\", \"pid\": $$, \"updated\": $(date +%s)}" > "$SESSION_FILE"
         ;;
-    active|start)
-        echo "{\"state\": \"active\", \"pid\": $$, \"updated\": $(date +%s)}" > "$SESSION_FILE"
+    idle|start)
+        echo "{\"state\": \"idle\", \"pid\": $$, \"updated\": $(date +%s)}" > "$SESSION_FILE"
+        ;;
+    prompting)
+        echo "{\"state\": \"prompting\", \"pid\": $$, \"updated\": $(date +%s)}" > "$SESSION_FILE"
         ;;
     end)
         rm -f "$SESSION_FILE"

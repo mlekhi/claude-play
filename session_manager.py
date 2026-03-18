@@ -46,6 +46,11 @@ class SessionManager:
             return True
         return all(s.get("state") == "busy" for s in sessions)
 
+    def any_prompting(self):
+        """Return True if any session is prompting for user input."""
+        sessions = self.get_sessions()
+        return any(s.get("state") == "prompting" for s in sessions)
+
     def has_sessions(self):
         """Return True if there are any tracked sessions."""
         return len(self.get_sessions()) > 0
