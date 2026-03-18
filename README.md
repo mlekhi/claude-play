@@ -91,7 +91,7 @@ the install script outputs this for you, but for reference — add to `~/.claude
     "UserPromptSubmit": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-piece-hook.sh busy"}]}],
     "PostToolUse": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-piece-hook.sh busy"}]}],
     "Stop": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-piece-hook.sh idle"}]}],
-    "Notification": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-piece-hook.sh prompting"}]}],
+    "PermissionRequest": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-piece-hook.sh prompting"}]}],
     "SessionStart": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-piece-hook.sh start"}]}],
     "SessionEnd": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-piece-hook.sh end"}]}]
   }

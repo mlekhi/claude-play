@@ -47,7 +47,7 @@ cat <<EOF
     "UserPromptSubmit": [{"matcher": "", "hooks": [{"type": "command", "command": "$HOOK_PATH busy"}]}],
     "PostToolUse": [{"matcher": "", "hooks": [{"type": "command", "command": "$HOOK_PATH busy"}]}],
     "Stop": [{"matcher": "", "hooks": [{"type": "command", "command": "$HOOK_PATH idle"}]}],
-    "Notification": [{"matcher": "", "hooks": [{"type": "command", "command": "$HOOK_PATH prompting"}]}],
+    "PermissionRequest": [{"matcher": "", "hooks": [{"type": "command", "command": "$HOOK_PATH prompting"}]}],
     "SessionStart": [{"matcher": "", "hooks": [{"type": "command", "command": "$HOOK_PATH start"}]}],
     "SessionEnd": [{"matcher": "", "hooks": [{"type": "command", "command": "$HOOK_PATH end"}]}]
   }
