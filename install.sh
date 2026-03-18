@@ -44,10 +44,12 @@ echo ""
 cat <<EOF
 {
   "hooks": {
-    "UserPromptSubmit": [{"hooks": [{"type": "command", "command": "$HOOK_PATH busy"}]}],
-    "Stop": [{"hooks": [{"type": "command", "command": "$HOOK_PATH active"}]}],
-    "SessionStart": [{"hooks": [{"type": "command", "command": "$HOOK_PATH start"}]}],
-    "SessionEnd": [{"hooks": [{"type": "command", "command": "$HOOK_PATH end"}]}]
+    "UserPromptSubmit": [{"matcher": "", "hooks": [{"type": "command", "command": "$HOOK_PATH busy"}]}],
+    "PostToolUse": [{"matcher": "", "hooks": [{"type": "command", "command": "$HOOK_PATH busy"}]}],
+    "Stop": [{"matcher": "", "hooks": [{"type": "command", "command": "$HOOK_PATH active"}]}],
+    "Notification": [{"matcher": "", "hooks": [{"type": "command", "command": "$HOOK_PATH active"}]}],
+    "SessionStart": [{"matcher": "", "hooks": [{"type": "command", "command": "$HOOK_PATH start"}]}],
+    "SessionEnd": [{"matcher": "", "hooks": [{"type": "command", "command": "$HOOK_PATH end"}]}]
   }
 }
 EOF

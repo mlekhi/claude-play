@@ -16,6 +16,8 @@ claude code fires hooks on lifecycle events. `claude-piece` listens:
 | event | what happens | effect |
 |---|---|---|
 | you hit enter | session marked `busy` | video plays |
+| tool finishes running | session marked `busy` | video keeps playing |
+| claude asks for permission | session marked `active` | video pauses + hides |
 | claude finishes | session marked `active` | video pauses + hides |
 | session closes | session file deleted | adjusts automatically |
 
@@ -86,10 +88,12 @@ the install script outputs this for you, but for reference — add to `~/.claude
 ```json
 {
   "hooks": {
-    "UserPromptSubmit": [{"hooks": [{"type": "command", "command": "/absolute/path/to/claude-piece-hook.sh busy"}]}],
-    "Stop": [{"hooks": [{"type": "command", "command": "/absolute/path/to/claude-piece-hook.sh active"}]}],
-    "SessionStart": [{"hooks": [{"type": "command", "command": "/absolute/path/to/claude-piece-hook.sh start"}]}],
-    "SessionEnd": [{"hooks": [{"type": "command", "command": "/absolute/path/to/claude-piece-hook.sh end"}]}]
+    "UserPromptSubmit": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-piece-hook.sh busy"}]}],
+    "PostToolUse": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-piece-hook.sh busy"}]}],
+    "Stop": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-piece-hook.sh active"}]}],
+    "Notification": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-piece-hook.sh active"}]}],
+    "SessionStart": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-piece-hook.sh start"}]}],
+    "SessionEnd": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-piece-hook.sh end"}]}]
   }
 }
 ```
