@@ -15,7 +15,7 @@ claude code fires hooks on lifecycle events. `claude-play` listens:
 
 | event | what happens | effect |
 |---|---|---|
-| you hit enter | session marked `busy` | video keeps playing |
+| you send a prompt | session marked `busy` | video keeps playing |
 | tool finishes running | session marked `busy` | video keeps playing |
 | claude asks for permission | session marked `prompting` | video pauses + hides |
 | claude finishes | session marked `idle` | video keeps playing |
