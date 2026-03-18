@@ -1,31 +1,87 @@
 # claude-piece
 
-Watches all your Claude Code sessions. When every session is busy (thinking/working),
-it plays an episode of One Pace. Pauses instantly when any session needs your input.
+watches all your claude code sessions. when every session is busy (thinking/working), it plays an episode of one pace. pauses instantly when any session needs your input.
 
 ```
 ┌─────────────────┐     state files      ┌──────────────┐    IPC socket    ┌─────┐
-│ Claude Code CLI │ ──── hooks ────────▶  │ claude-piece  │ ──────────────▶ │ mpv │
-│ (N sessions)    │   write to disk       │   daemon      │  pause/resume   │     │
+│ claude code cli │ ──── hooks ────────▶  │ claude-piece  │ ──────────────▶ │ mpv │
+│ (n sessions)    │   write to disk       │   daemon      │  pause/resume   │     │
 └─────────────────┘                       └──────────────┘                  └─────┘
 ```
 
-## Prerequisites
+## how it works
 
-- Python 3
-- mpv (`brew install mpv`)
-- Claude Code
+claude code fires hooks on lifecycle events. `claude-piece` listens:
 
-## Setup
+| event | what happens | effect |
+|---|---|---|
+| you hit enter | session marked `busy` | video plays |
+| claude finishes | session marked `active` | video pauses + hides |
+| session closes | session file deleted | adjusts automatically |
 
-1. Run the installer: `bash install.sh` (creates venv, installs deps, sets up config)
-2. Edit `~/.claude-piece/config.json` to point to your One Pace episodes
-3. Add the hooks from the installer output to `~/.claude/settings.json`
-4. Run the daemon: `.venv/bin/python claude_piece.py`
+when **all** sessions are busy (or none exist) → video plays.
+when **any** session needs your input → video pauses and minimizes instantly.
 
-## Claude Code Hooks
+your playback position is saved between pauses and across restarts.
 
-The install script will show you the hooks to add to `~/.claude/settings.json`:
+## prerequisites
+
+- python 3
+- [mpv](https://mpv.io/) — `brew install mpv`
+- [claude code](https://docs.anthropic.com/en/docs/claude-code)
+
+## setup
+
+```bash
+# 1. clone and install
+git clone https://github.com/mlekhi/claude-piece.git
+cd claude-piece
+bash install.sh
+
+# 2. configure your episodes
+# edit ~/.claude-piece/config.json (see config section below)
+
+# 3. add hooks to claude code
+# the install script prints the exact json — paste it into ~/.claude/settings.json
+
+# 4. run the daemon
+.venv/bin/python claude_piece.py
+```
+
+## config
+
+edit `~/.claude-piece/config.json`:
+
+### stream urls (no downloads needed)
+
+```json
+{
+  "source": "urls",
+  "urls": [
+    "https://your-video-url.com/episode1.mp4",
+    "https://your-video-url.com/episode2.mp4"
+  ],
+  "play_when_no_sessions": true
+}
+```
+
+paste video urls from wherever you watch one pace. mpv streams them directly — nothing gets downloaded.
+
+### local files
+
+```json
+{
+  "source": "directory",
+  "path": "/path/to/one-pace-episodes/",
+  "play_when_no_sessions": true
+}
+```
+
+plays files in sorted order. supports mp4, mkv, avi, webm.
+
+## claude code hooks
+
+the install script outputs this for you, but for reference — add to `~/.claude/settings.json`:
 
 ```json
 {
@@ -38,18 +94,26 @@ The install script will show you the hooks to add to `~/.claude/settings.json`:
 }
 ```
 
-## Config
+replace `/absolute/path/to/` with the actual path where you cloned this repo.
 
-Create `~/.claude-piece/config.json`:
+## options
 
-```json
-{
-  "source": "directory",
-  "path": "/path/to/one-pace-episodes/",
-  "play_when_no_sessions": true
-}
+| config key | default | description |
+|---|---|---|
+| `source` | `"directory"` | `"directory"` for local files, `"urls"` for streaming |
+| `path` | — | path to episode folder (directory mode) |
+| `urls` | `[]` | list of video urls (urls mode) |
+| `play_when_no_sessions` | `true` | play video even when no claude code sessions exist |
+
+## how state tracking works
+
+```
+~/.claude-piece/
+├── config.json          # your episode config
+├── playback.json        # current episode + position (auto-managed)
+└── sessions/
+    ├── <session-id>.json  # one file per active claude code session
+    └── ...
 ```
 
-Two source modes:
-- `"directory"` — folder of video files (mp4, mkv, avi, webm), played in sorted order
-- `"urls"` — list of URLs that mpv + yt-dlp can stream
+each session file contains `{"state": "busy"|"active", ...}`. the daemon watches this directory for changes and reacts instantly via [watchdog](https://github.com/gorakhargosh/watchdog). stale sessions (crashed without cleanup) are automatically pruned.
