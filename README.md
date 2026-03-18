@@ -18,10 +18,10 @@ it plays an episode of One Pace. Pauses instantly when any session needs your in
 
 ## Setup
 
-1. Install dependencies: `pip install -r requirements.txt`
-2. Run the installer: `bash install.sh`
-3. Edit `~/.claude-piece/config.json` to point to your One Pace episodes
-4. Run the daemon: `python claude_piece.py`
+1. Run the installer: `bash install.sh` (creates venv, installs deps, sets up config)
+2. Edit `~/.claude-piece/config.json` to point to your One Pace episodes
+3. Add the hooks from the installer output to `~/.claude/settings.json`
+4. Run the daemon: `.venv/bin/python claude_piece.py`
 
 ## Claude Code Hooks
 

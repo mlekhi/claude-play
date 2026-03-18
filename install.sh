@@ -9,9 +9,14 @@ CONFIG_DIR="$HOME/.claude-piece"
 
 echo "=== claude-piece installer ==="
 
-# Install Python deps
+# Set up venv and install deps
+VENV_DIR="$SCRIPT_DIR/.venv"
+if [ ! -d "$VENV_DIR" ]; then
+    echo "Creating virtual environment..."
+    python3 -m venv "$VENV_DIR"
+fi
 echo "Installing Python dependencies..."
-pip3 install -r "$SCRIPT_DIR/requirements.txt"
+"$VENV_DIR/bin/pip" install -r "$SCRIPT_DIR/requirements.txt"
 
 # Make hook executable
 chmod +x "$HOOK_PATH"
@@ -48,4 +53,4 @@ cat <<EOF
 EOF
 
 echo ""
-echo "Done! Run: python3 $SCRIPT_DIR/claude_piece.py"
+echo "Done! Run: $VENV_DIR/bin/python $SCRIPT_DIR/claude_piece.py"
