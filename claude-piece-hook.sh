@@ -21,13 +21,13 @@ SESSION_FILE="$SESSIONS_DIR/$SESSION_ID.json"
 
 case "$STATE" in
     busy)
-        echo "{\"state\": \"busy\", \"pid\": $$, \"updated\": $(date +%s)}" > "$SESSION_FILE"
+        echo "{\"state\": \"busy\", \"pid\": $PPID, \"updated\": $(date +%s)}" > "$SESSION_FILE"
         ;;
     idle|start)
-        echo "{\"state\": \"idle\", \"pid\": $$, \"updated\": $(date +%s)}" > "$SESSION_FILE"
+        echo "{\"state\": \"idle\", \"pid\": $PPID, \"updated\": $(date +%s)}" > "$SESSION_FILE"
         ;;
     prompting)
-        echo "{\"state\": \"prompting\", \"pid\": $$, \"updated\": $(date +%s)}" > "$SESSION_FILE"
+        echo "{\"state\": \"prompting\", \"pid\": $PPID, \"updated\": $(date +%s)}" > "$SESSION_FILE"
         ;;
     end)
         rm -f "$SESSION_FILE"
