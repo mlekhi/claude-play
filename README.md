@@ -1,6 +1,6 @@
 # claude-play
 
-auto-plays videos when claude code is busy.
+watch videos while claude thinks.
 
 ```
 ┌─────────────────┐     state files      ┌──────────────┐    IPC socket    ┌─────┐
