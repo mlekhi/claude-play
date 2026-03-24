@@ -1,6 +1,6 @@
 # claude-play
 
-watch videos while claude thinks.
+watch tv while claude codes.
 
 <!-- TODO: add demo gif here -->
 <!-- ![demo](assets/demo.gif) -->
