@@ -51,21 +51,31 @@ mpv handles playback, so anything mpv can play works:
 
 ## setup
 
+### 1. clone and install
+
 ```bash
-# 1. clone and install
 git clone https://github.com/mlekhi/claude-play.git
 cd claude-play
 bash install.sh
+```
 
-# 2. configure your videos
-# edit ~/.claude-play/config.json (see config section below)
+this creates a virtual environment, installs dependencies, and prints the hooks json you'll need in step 3.
 
-# 3. add hooks to claude code
-# the install script prints the exact json — paste it into ~/.claude/settings.json
+### 2. configure your videos
 
-# 4. run the daemon
+edit `~/.claude-play/config.json` with your video urls or local file path. see the [config](#config) section below for examples.
+
+### 3. add hooks to claude code
+
+copy the hooks json printed by the install script into your `~/.claude/settings.json` under the `"hooks"` key. these hooks tell claude code to notify the daemon about session state changes. see the [claude code hooks](#claude-code-hooks) section for the full reference.
+
+### 4. run the daemon
+
+```bash
 .venv/bin/python claude_play.py
 ```
+
+the daemon will start watching for claude code sessions. open a claude code session in another terminal and it'll pick it up automatically. the video plays when claude is working and pauses when you need to respond.
 
 ## config
 
