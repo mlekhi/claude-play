@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>claude-play</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><circle cx='32' cy='32' r='30' fill='%23FF6B2B'/><path d='M24 18 L24 46 L50 32 Z' fill='white' stroke='white' stroke-width='3' stroke-linejoin='round'/></svg>">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #1a1a1a;
+      background: #fafafa;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 100px 0 80px;
+    }
+
+    .logo {
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 12px;
+    }
+
+    .hero .tagline {
+      font-size: 1.25rem;
+      color: #666;
+      margin-bottom: 32px;
+    }
+
+    .hero .cta {
+      display: inline-block;
+      background: #FF6B2B;
+      color: #fff;
+      text-decoration: none;
+      padding: 12px 28px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+
+    .hero .cta:hover {
+      background: #e55a1f;
+    }
+
+    /* Section */
+    section {
+      padding: 60px 0;
+      border-top: 1px solid #eee;
+    }
+
+    section h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    section p {
+      color: #444;
+      margin-bottom: 16px;
+    }
+
+    /* Diagram */
+    .diagram {
+      background: #f0f0f0;
+      border-radius: 8px;
+      padding: 24px;
+      overflow-x: auto;
+      margin-bottom: 24px;
+    }
+
+    .diagram pre {
+      font-family: "SF Mono", "Fira Code", "Fira Mono", Menlo, Consolas, monospace;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      color: #1a1a1a;
+      margin: 0;
+    }
+
+    /* Steps */
+    .steps {
+      list-style: none;
+      counter-reset: step;
+    }
+
+    .steps li {
+      counter-increment: step;
+      padding: 16px 0;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      gap: 16px;
+      align-items: baseline;
+    }
+
+    .steps li:last-child {
+      border-bottom: none;
+    }
+
+    .steps li::before {
+      content: counter(step);
+      font-size: 0.85rem;
+      font-weight: 600;
+      background: #FF6B2B;
+      color: #fff;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .steps .step-content {
+      flex: 1;
+    }
+
+    .steps .step-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .steps .step-desc {
+      color: #666;
+      font-size: 0.95rem;
+    }
+
+    .steps code {
+      background: #f0f0f0;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: "SF Mono", "Fira Code", Menlo, Consolas, monospace;
+      font-size: 0.85rem;
+    }
+
+    /* Flow items */
+    .flow {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .flow-item {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .flow-item .label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #999;
+      margin-bottom: 8px;
+    }
+
+    .flow-item .value {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 40px 0;
+      color: #999;
+      font-size: 0.85rem;
+      border-top: 1px solid #eee;
+    }
+
+    footer a {
+      color: #666;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: #1a1a1a;
+    }
+
+    /* Stats */
+    .stats-section {
+      border-top: none;
+      padding: 20px 0 0;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 4px;
+    }
+
+    /* Demo placeholder */
+    .demo-section {
+      border-top: none;
+      padding: 0 0 20px;
+    }
+
+    .demo-placeholder {
+      background: #f0f0f0;
+      border: 2px dashed #d0d0d0;
+      border-radius: 12px;
+      padding: 60px 24px;
+      text-align: center;
+      color: #999;
+    }
+
+    .demo-placeholder .demo-icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+      opacity: 0.4;
+    }
+
+    .demo-placeholder p {
+      color: #999;
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .hero { padding: 60px 0 50px; }
+      .hero h1 { font-size: 2.2rem; }
+      .hero .tagline { font-size: 1.1rem; }
+      .flow { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <div class="hero">
+      <div class="logo">
+        <svg width="72" height="72" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="32" cy="32" r="30" fill="#FF6B2B"/>
+          <path d="M24 18 L24 46 L50 32 Z" fill="white" stroke="white" stroke-width="3" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h1>claude-play</h1>
+      <p class="tagline">watch tv while claude codes.</p>
+      <a href="https://github.com/mlekhi/claude-play" class="cta">View on GitHub</a>
+    </div>
+
+    <section class="demo-section">
+      <div class="demo-placeholder">
+        <div class="demo-icon">&#9654;</div>
+        <p>demo coming soon</p>
+      </div>
+    </section>
+
+    <section class="stats-section">
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-number" id="stat-stars">-</div>
+          <div class="stat-label">stars</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number" id="stat-forks">-</div>
+          <div class="stat-label">forks</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number" id="stat-commits">-</div>
+          <div class="stat-label">commits</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>How it works</h2>
+      <p>Claude Code fires hooks on lifecycle events. claude-play listens to those hooks and controls mpv, playing your videos when Claude is working and pausing instantly when you need to respond.</p>
+
+      <div class="flow">
+        <div class="flow-item">
+          <div class="label">Claude Code</div>
+          <div class="value">hooks</div>
+        </div>
+        <div class="flow-item">
+          <div class="label">claude-play</div>
+          <div class="value">daemon</div>
+        </div>
+        <div class="flow-item">
+          <div class="label">mpv</div>
+          <div class="value">video</div>
+        </div>
+      </div>
+
+      <div class="diagram" style="margin-top: 24px;">
+        <pre>Claude working    → video plays
+Claude done       → video keeps playing
+Permission needed → video pauses + hides
+You respond       → video resumes</pre>
+      </div>
+
+      <p>Works across multiple sessions. Saves your playback position between pauses and restarts. Streams from URLs. No downloads needed.</p>
+    </section>
+
+    <section>
+      <h2>Get started</h2>
+      <ol class="steps">
+        <li>
+          <div class="step-content">
+            <div class="step-title">Clone and install</div>
+            <div class="step-desc"><code>git clone https://github.com/mlekhi/claude-play.git && cd claude-play && bash install.sh</code></div>
+          </div>
+        </li>
+        <li>
+          <div class="step-content">
+            <div class="step-title">Configure your videos</div>
+            <div class="step-desc">Edit <code>~/.claude-play/config.json</code> with your video URLs or local file path.</div>
+          </div>
+        </li>
+        <li>
+          <div class="step-content">
+            <div class="step-title">Add hooks to Claude Code</div>
+            <div class="step-desc">Copy the hooks JSON from the install output into <code>~/.claude/settings.json</code>.</div>
+          </div>
+        </li>
+        <li>
+          <div class="step-content">
+            <div class="step-title">Run the daemon</div>
+            <div class="step-desc"><code>.venv/bin/python claude_play.py</code></div>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+  </div>
+
+  <footer>
+    <p style="margin-bottom: 12px;">personally i use this to watch <a href="https://onepace.net">one pace</a> while coding. highly recommend.</p>
+    made with 🧡 by <a href="https://github.com/mlekhi">maya</a>
+  </footer>
+
+  <script>
+    const repo = "mlekhi/claude-play";
+    fetch(`https://api.github.com/repos/${repo}`)
+      .then(r => r.json())
+      .then(data => {
+        document.getElementById("stat-stars").textContent = data.stargazers_count;
+        document.getElementById("stat-forks").textContent = data.forks_count;
+      })
+      .catch(() => {});
+    fetch(`https://api.github.com/repos/${repo}/commits?per_page=1`, { method: "HEAD" })
+      .then(r => {
+        const link = r.headers.get("link");
+        if (link) {
+          const match = link.match(/page=(\d+)>; rel="last"/);
+          if (match) document.getElementById("stat-commits").textContent = match[1];
+        }
+      })
+      .catch(() => {});
+  </script>
+</body>
+</html>

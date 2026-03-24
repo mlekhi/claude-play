@@ -1,6 +1,6 @@
 # claude-play
 
-watch tv while claude codes.
+watch tv while claude codes. [claude-play.com](https://claude-play.com)
 
 <!-- TODO: add demo gif here -->
 <!-- ![demo](assets/demo.gif) -->
