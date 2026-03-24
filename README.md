@@ -1,6 +1,6 @@
 # claude-play
 
-watches all your claude code sessions. plays videos when every session is idle — pauses instantly when any session needs your input.
+watches all your claude code sessions. plays videos when every session is idle — pauses instantly when any session needs input.
 
 ```
 ┌─────────────────┐     state files      ┌──────────────┐    IPC socket    ┌─────┐
