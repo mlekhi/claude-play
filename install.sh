@@ -18,6 +18,11 @@ fi
 echo "Installing Python dependencies..."
 "$VENV_DIR/bin/pip" install -r "$SCRIPT_DIR/requirements.txt"
 
+# Check for mpv
+if ! command -v mpv &> /dev/null; then
+    echo "WARNING: mpv not found. Install it with: brew install mpv"
+fi
+
 # Make hook executable
 chmod +x "$HOOK_PATH"
 
