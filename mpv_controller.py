@@ -42,7 +42,14 @@ class MpvController:
         for _ in range(50):
             if os.path.exists(self.SOCKET_PATH):
                 break
+            if self.process.poll() is not None:
+                self._launching = False
+                raise RuntimeError(f"mpv exited early (code {self.process.returncode}) — bad file or URL?")
             time.sleep(0.1)
+
+        if not os.path.exists(self.SOCKET_PATH):
+            self._launching = False
+            raise RuntimeError("mpv socket never appeared — is mpv installed and working?")
 
         self._connect()
 
