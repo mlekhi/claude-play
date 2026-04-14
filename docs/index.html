@@ -383,6 +383,18 @@ Permission needed → video pauses + hides
 You respond       → video resumes</pre>
       </div>
 
+      <h3 style="margin-top:32px;margin-bottom:12px;font-size:1rem;font-weight:600;">playback modes</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+        <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:20px;">
+          <div style="font-family:var(--mono);font-size:0.8rem;color:var(--accent);margin-bottom:8px;">idle <span style="color:var(--text-muted);font-style:italic;">(default)</span></div>
+          <div style="font-size:0.875rem;color:var(--text-secondary);line-height:1.5;">Video plays whenever Claude is working <em>or</em> idle. Pauses only when you need to respond. Recommended for most people.</div>
+        </div>
+        <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:20px;">
+          <div style="font-family:var(--mono);font-size:0.8rem;color:var(--accent);margin-bottom:8px;">always-busy</div>
+          <div style="font-size:0.875rem;color:var(--text-secondary);line-height:1.5;">Video plays only while Claude is actively running tools. Pauses when idle or prompting. Good if you want it as a "Claude is busy" indicator.</div>
+        </div>
+      </div>
+
       <p>Works across multiple sessions. Saves your playback position between pauses and restarts. Streams from URLs. No downloads needed.</p>
     </section>
 

@@ -2,7 +2,7 @@
 
 watch tv while claude codes. [claudeplay.dev](https://claudeplay.dev)
 
-<video src="https://github.com/mlekhi/claude-play/raw/main/docs/demo.mp4" autoplay loop muted playsinline></video>
+![demo](docs/CLAUDE%20PLAY.gif)
 
 ```
 ┌─────────────────┐     state files      ┌──────────────┐    IPC socket    ┌─────┐
@@ -136,7 +136,14 @@ replace `/absolute/path/to/` with the actual path where you cloned this repo.
 | `source` | `"directory"` | `"directory"` for local files, `"urls"` for streaming |
 | `path` | — | path to episode folder (directory mode) |
 | `urls` | `[]` | list of video urls (urls mode) |
-| `mode` | `"idle"` | `"idle"` = play unless prompting, `"always-busy"` = play only when all sessions are busy |
+| `mode` | `"idle"` | see below |
+
+### modes
+
+| mode | behavior |
+|---|---|
+| `idle` | video plays whenever claude is working or idle — pauses only when you need to respond (permission request). **recommended for most people.** |
+| `always-busy` | video plays only when claude is actively running a tool or thinking — pauses during idle + prompting. good if you want the video as a "claude is busy" indicator. |
 
 ## how state tracking works
 
