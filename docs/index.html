@@ -383,19 +383,52 @@ Permission needed → video pauses + hides
 You respond       → video resumes</pre>
       </div>
 
-      <h3 style="margin-top:32px;margin-bottom:12px;font-size:1rem;font-weight:600;">playback modes</h3>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
-        <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:20px;">
-          <div style="font-family:var(--mono);font-size:0.8rem;color:var(--accent);margin-bottom:8px;">idle <span style="color:var(--text-muted);font-style:italic;">(default)</span></div>
-          <div style="font-size:0.875rem;color:var(--text-secondary);line-height:1.5;">Video plays whenever Claude is working <em>or</em> idle. Pauses only when you need to respond. Recommended for most people.</div>
-        </div>
-        <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:20px;">
-          <div style="font-family:var(--mono);font-size:0.8rem;color:var(--accent);margin-bottom:8px;">always-busy</div>
-          <div style="font-size:0.875rem;color:var(--text-secondary);line-height:1.5;">Video plays only while Claude is actively running tools. Pauses when idle or prompting. Good if you want it as a "Claude is busy" indicator.</div>
-        </div>
-      </div>
-
       <p>Works across multiple sessions. Saves your playback position between pauses and restarts. Streams from URLs. No downloads needed.</p>
+    </section>
+
+    <section id="modes">
+      <h2>Playback modes</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+
+        <div style="border:2px solid #FF6B2B;border-radius:12px;padding:24px;position:relative;">
+          <div style="position:absolute;top:14px;right:14px;font-size:0.7rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;background:#FF6B2B;color:#fff;padding:2px 8px;border-radius:20px;">default</div>
+          <div style="font-family:'SF Mono','Fira Code',Menlo,monospace;font-size:1rem;font-weight:600;margin-bottom:16px;">idle</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.82rem;">
+              <span style="color:#444;">Claude is running tools</span>
+              <span style="color:#22c55e;font-weight:600;">▶ plays</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.82rem;">
+              <span style="color:#444;">Claude finished / waiting</span>
+              <span style="color:#22c55e;font-weight:600;">▶ plays</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.82rem;">
+              <span style="color:#444;">Claude needs your input</span>
+              <span style="color:#999;font-weight:600;">⏸ paused</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="border:1px solid #e0e0e0;border-radius:12px;padding:24px;">
+          <div style="font-family:'SF Mono','Fira Code',Menlo,monospace;font-size:1rem;font-weight:600;margin-bottom:16px;color:#444;">always-busy</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.82rem;">
+              <span style="color:#444;">Claude is running tools</span>
+              <span style="color:#22c55e;font-weight:600;">▶ plays</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.82rem;">
+              <span style="color:#444;">Claude finished / waiting</span>
+              <span style="color:#999;font-weight:600;">⏸ paused</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.82rem;">
+              <span style="color:#444;">Claude needs your input</span>
+              <span style="color:#999;font-weight:600;">⏸ paused</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <p style="font-size:0.85rem;color:#888;">set via <code>mode</code> in <code>~/.claude-play/config.json</code></p>
     </section>
 
     <section id="get-started">
