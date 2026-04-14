@@ -2,8 +2,7 @@
 
 watch tv while claude codes. [claudeplay.dev](https://claudeplay.dev)
 
-<!-- TODO: add demo gif here -->
-<!-- ![demo](assets/demo.gif) -->
+<video src="https://github.com/mlekhi/claude-play/raw/main/docs/demo.mp4" autoplay loop muted playsinline></video>
 
 ```
 ┌─────────────────┐     state files      ┌──────────────┐    IPC socket    ┌─────┐
@@ -75,7 +74,7 @@ copy the hooks json printed by the install script into your `~/.claude/settings.
 ### 4. run the daemon
 
 ```bash
-.venv/bin/python claude_play.py
+venv/bin/python claude_play.py
 ```
 
 the daemon will start watching for claude code sessions. open a claude code session in another terminal and it'll pick it up automatically. the video plays when claude is working and pauses when you need to respond.
