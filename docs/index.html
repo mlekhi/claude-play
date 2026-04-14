@@ -308,10 +308,17 @@
 
     /* Responsive */
     @media (max-width: 600px) {
+      nav { padding: 16px 20px; }
+      .container { padding: 0 20px; }
       .hero { padding: 60px 0 50px; }
-      .hero h1 { font-size: 2.2rem; }
-      .hero .tagline { font-size: 1.1rem; }
+      .hero h1 { font-size: 2rem; }
+      .hero .tagline { font-size: 1rem; }
       .flow { grid-template-columns: 1fr; }
+      .stats { gap: 24px; }
+      .stat-number { font-size: 1.5rem; }
+      .modes-grid { grid-template-columns: 1fr !important; }
+      section { padding: 48px 0; }
+      .steps code { word-break: break-all; }
     }
   </style>
 </head>
@@ -392,7 +399,7 @@ You respond       → video resumes</pre>
 
     <section id="modes">
       <h2>Playback modes</h2>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+      <div class="modes-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
 
         <div style="border:2px solid #FF6B2B;border-radius:12px;padding:24px;position:relative;">
           <div style="position:absolute;top:14px;right:14px;font-size:0.7rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;background:#FF6B2B;color:#fff;padding:2px 8px;border-radius:20px;">default</div>
