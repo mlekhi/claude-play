@@ -1,0 +1,1 @@
+Factory Slack integration test
