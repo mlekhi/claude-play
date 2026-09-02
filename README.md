@@ -1,163 +1,163 @@
-# claude-play
+# CLAUDE-PLAY
 
-watch tv while claude codes. [claudeplay.dev](https://claudeplay.dev)
+WATCH TV WHILE CLAUDE CODES. [CLAUDEPLAY.DEV](HTTPS://CLAUDEPLAY.DEV)
 
-![demo](docs/CLAUDE%20PLAY.gif)
+![DEMO](DOCS/CLAUDE%20PLAY.GIF)
 
 ```
-┌─────────────────┐     state files      ┌──────────────┐    IPC socket    ┌─────┐
-│ claude code cli │ ──── hooks ────────▶  │  claude-play  │ ──────────────▶ │ mpv │
-│ (n sessions)    │   write to disk       │    daemon     │  pause/resume   │     │
+┌─────────────────┐     STATE FILES      ┌──────────────┐    IPC SOCKET    ┌─────┐
+│ CLAUDE CODE CLI │ ──── HOOKS ────────▶  │  CLAUDE-PLAY  │ ──────────────▶ │ MPV │
+│ (N SESSIONS)    │   WRITE TO DISK       │    DAEMON     │  PAUSE/RESUME   │     │
 └─────────────────┘                       └──────────────┘                  └─────┘
 ```
 
-## how it works
+## HOW IT WORKS
 
-claude code fires hooks on lifecycle events. `claude-play` listens:
+CLAUDE CODE FIRES HOOKS ON LIFECYCLE EVENTS. `CLAUDE-PLAY` LISTENS:
 
-| event | what happens | effect |
+| EVENT | WHAT HAPPENS | EFFECT |
 |---|---|---|
-| you send a prompt | session marked `busy` | video keeps playing |
-| tool finishes running | session marked `busy` | video keeps playing |
-| claude asks for permission | session marked `prompting` | video pauses + hides |
-| claude finishes | session marked `idle` | video keeps playing |
-| session closes | session file deleted | adjusts automatically |
+| YOU SEND A PROMPT | SESSION MARKED `BUSY` | VIDEO KEEPS PLAYING |
+| TOOL FINISHES RUNNING | SESSION MARKED `BUSY` | VIDEO KEEPS PLAYING |
+| CLAUDE ASKS FOR PERMISSION | SESSION MARKED `PROMPTING` | VIDEO PAUSES + HIDES |
+| CLAUDE FINISHES | SESSION MARKED `IDLE` | VIDEO KEEPS PLAYING |
+| SESSION CLOSES | SESSION FILE DELETED | ADJUSTS AUTOMATICALLY |
 
-when **any** session is prompting for input → video pauses and minimizes instantly.
-otherwise → video plays.
+WHEN **ANY** SESSION IS PROMPTING FOR INPUT → VIDEO PAUSES AND MINIMIZES INSTANTLY.
+OTHERWISE → VIDEO PLAYS.
 
-your playback position is saved between pauses and across restarts.
+YOUR PLAYBACK POSITION IS SAVED BETWEEN PAUSES AND ACROSS RESTARTS.
 
-## supported video sources
+## SUPPORTED VIDEO SOURCES
 
-mpv handles playback, so anything mpv can play works:
+MPV HANDLES PLAYBACK, SO ANYTHING MPV CAN PLAY WORKS:
 
-| source | example |
+| SOURCE | EXAMPLE |
 |---|---|
-| local files | `/path/to/videos/*.mp4` |
-| direct file urls | `https://example.com/video.mp4` |
-| pixeldrain | `https://pixeldrain.net/api/file/<id>` |
-| youtube | `https://youtube.com/watch?v=...` (needs yt-dlp) |
-| twitch vods | `https://twitch.tv/videos/...` (needs yt-dlp) |
-| gdrive (public) | `https://drive.google.com/file/d/<id>/view` |
-| hls streams | `https://example.com/stream.m3u8` |
-| any direct url | if it ends in `.mp4`, `.mkv`, `.webm`, etc. — it works |
+| LOCAL FILES | `/PATH/TO/VIDEOS/*.MP4` |
+| DIRECT FILE URLS | `HTTPS://EXAMPLE.COM/VIDEO.MP4` |
+| PIXELDRAIN | `HTTPS://PIXELDRAIN.NET/API/FILE/<ID>` |
+| YOUTUBE | `HTTPS://YOUTUBE.COM/WATCH?V=...` (NEEDS YT-DLP) |
+| TWITCH VODS | `HTTPS://TWITCH.TV/VIDEOS/...` (NEEDS YT-DLP) |
+| GDRIVE (PUBLIC) | `HTTPS://DRIVE.GOOGLE.COM/FILE/D/<ID>/VIEW` |
+| HLS STREAMS | `HTTPS://EXAMPLE.COM/STREAM.M3U8` |
+| ANY DIRECT URL | IF IT ENDS IN `.MP4`, `.MKV`, `.WEBM`, ETC. — IT WORKS |
 
-**tip:** for sites like youtube/twitch, install [yt-dlp](https://github.com/yt-dlp/yt-dlp) and mpv will use it automatically.
+**TIP:** FOR SITES LIKE YOUTUBE/TWITCH, INSTALL [YT-DLP](HTTPS://GITHUB.COM/YT-DLP/YT-DLP) AND MPV WILL USE IT AUTOMATICALLY.
 
-## prerequisites
+## PREREQUISITES
 
-- python 3
-- [mpv](https://mpv.io/) — `brew install mpv`
-- [claude code](https://docs.anthropic.com/en/docs/claude-code)
+- PYTHON 3
+- [MPV](HTTPS://MPV.IO/) — `BREW INSTALL MPV`
+- [CLAUDE CODE](HTTPS://DOCS.ANTHROPIC.COM/EN/DOCS/CLAUDE-CODE)
 
-## setup
+## SETUP
 
-### 1. clone and install
+### 1. CLONE AND INSTALL
 
-```bash
-git clone https://github.com/mlekhi/claude-play.git
-cd claude-play
-bash install.sh
+```BASH
+GIT CLONE HTTPS://GITHUB.COM/MLEKHI/CLAUDE-PLAY.GIT
+CD CLAUDE-PLAY
+BASH INSTALL.SH
 ```
 
-this creates a virtual environment, installs dependencies, and prints the hooks json you'll need in step 3.
+THIS CREATES A VIRTUAL ENVIRONMENT, INSTALLS DEPENDENCIES, AND PRINTS THE HOOKS JSON YOU'LL NEED IN STEP 3.
 
-### 2. configure your videos
+### 2. CONFIGURE YOUR VIDEOS
 
-edit `~/.claude-play/config.json` with your video urls or local file path. see the [config](#config) section below for examples.
+EDIT `~/.CLAUDE-PLAY/CONFIG.JSON` WITH YOUR VIDEO URLS OR LOCAL FILE PATH. SEE THE [CONFIG](#CONFIG) SECTION BELOW FOR EXAMPLES.
 
-### 3. add hooks to claude code
+### 3. ADD HOOKS TO CLAUDE CODE
 
-copy the hooks json printed by the install script into your `~/.claude/settings.json` under the `"hooks"` key. these hooks tell claude code to notify the daemon about session state changes. see the [claude code hooks](#claude-code-hooks) section for the full reference.
+COPY THE HOOKS JSON PRINTED BY THE INSTALL SCRIPT INTO YOUR `~/.CLAUDE/SETTINGS.JSON` UNDER THE `"HOOKS"` KEY. THESE HOOKS TELL CLAUDE CODE TO NOTIFY THE DAEMON ABOUT SESSION STATE CHANGES. SEE THE [CLAUDE CODE HOOKS](#CLAUDE-CODE-HOOKS) SECTION FOR THE FULL REFERENCE.
 
-### 4. run the daemon
+### 4. RUN THE DAEMON
 
-```bash
-venv/bin/python claude_play.py
+```BASH
+VENV/BIN/PYTHON CLAUDE_PLAY.PY
 ```
 
-the daemon will start watching for claude code sessions. open a claude code session in another terminal and it'll pick it up automatically. the video plays when claude is working and pauses when you need to respond.
+THE DAEMON WILL START WATCHING FOR CLAUDE CODE SESSIONS. OPEN A CLAUDE CODE SESSION IN ANOTHER TERMINAL AND IT'LL PICK IT UP AUTOMATICALLY. THE VIDEO PLAYS WHEN CLAUDE IS WORKING AND PAUSES WHEN YOU NEED TO RESPOND.
 
-## config
+## CONFIG
 
-edit `~/.claude-play/config.json`:
+EDIT `~/.CLAUDE-PLAY/CONFIG.JSON`:
 
-### stream urls (no downloads needed)
+### STREAM URLS (NO DOWNLOADS NEEDED)
 
-```json
+```JSON
 {
-  "source": "urls",
-  "urls": [
-    "https://your-video-url.com/episode1.mp4",
-    "https://your-video-url.com/episode2.mp4"
+  "SOURCE": "URLS",
+  "URLS": [
+    "HTTPS://YOUR-VIDEO-URL.COM/EPISODE1.MP4",
+    "HTTPS://YOUR-VIDEO-URL.COM/EPISODE2.MP4"
   ],
-  "mode": "idle"
+  "MODE": "IDLE"
 }
 ```
 
-paste video urls from wherever you watch. mpv streams them directly — nothing gets downloaded.
+PASTE VIDEO URLS FROM WHEREVER YOU WATCH. MPV STREAMS THEM DIRECTLY — NOTHING GETS DOWNLOADED.
 
-### local files
+### LOCAL FILES
 
-```json
+```JSON
 {
-  "source": "directory",
-  "path": "/path/to/videos/",
-  "mode": "idle"
+  "SOURCE": "DIRECTORY",
+  "PATH": "/PATH/TO/VIDEOS/",
+  "MODE": "IDLE"
 }
 ```
 
-plays files in sorted order. supports mp4, mkv, avi, webm.
+PLAYS FILES IN SORTED ORDER. SUPPORTS MP4, MKV, AVI, WEBM.
 
-## claude code hooks
+## CLAUDE CODE HOOKS
 
-the install script outputs this for you, but for reference — add to `~/.claude/settings.json`:
+THE INSTALL SCRIPT OUTPUTS THIS FOR YOU, BUT FOR REFERENCE — ADD TO `~/.CLAUDE/SETTINGS.JSON`:
 
-```json
+```JSON
 {
-  "hooks": {
-    "UserPromptSubmit": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-play-hook.sh busy"}]}],
-    "PostToolUse": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-play-hook.sh busy"}]}],
-    "Stop": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-play-hook.sh idle"}]}],
-    "PermissionRequest": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-play-hook.sh prompting"}]}],
-    "SessionStart": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-play-hook.sh start"}]}],
-    "SessionEnd": [{"matcher": "", "hooks": [{"type": "command", "command": "/absolute/path/to/claude-play-hook.sh end"}]}]
+  "HOOKS": {
+    "USERPROMPTSUBMIT": [{"MATCHER": "", "HOOKS": [{"TYPE": "COMMAND", "COMMAND": "/ABSOLUTE/PATH/TO/CLAUDE-PLAY-HOOK.SH BUSY"}]}],
+    "POSTTOOLUSE": [{"MATCHER": "", "HOOKS": [{"TYPE": "COMMAND", "COMMAND": "/ABSOLUTE/PATH/TO/CLAUDE-PLAY-HOOK.SH BUSY"}]}],
+    "STOP": [{"MATCHER": "", "HOOKS": [{"TYPE": "COMMAND", "COMMAND": "/ABSOLUTE/PATH/TO/CLAUDE-PLAY-HOOK.SH IDLE"}]}],
+    "PERMISSIONREQUEST": [{"MATCHER": "", "HOOKS": [{"TYPE": "COMMAND", "COMMAND": "/ABSOLUTE/PATH/TO/CLAUDE-PLAY-HOOK.SH PROMPTING"}]}],
+    "SESSIONSTART": [{"MATCHER": "", "HOOKS": [{"TYPE": "COMMAND", "COMMAND": "/ABSOLUTE/PATH/TO/CLAUDE-PLAY-HOOK.SH START"}]}],
+    "SESSIONEND": [{"MATCHER": "", "HOOKS": [{"TYPE": "COMMAND", "COMMAND": "/ABSOLUTE/PATH/TO/CLAUDE-PLAY-HOOK.SH END"}]}]
   }
 }
 ```
 
-replace `/absolute/path/to/` with the actual path where you cloned this repo.
+REPLACE `/ABSOLUTE/PATH/TO/` WITH THE ACTUAL PATH WHERE YOU CLONED THIS REPO.
 
-## options
+## OPTIONS
 
-| config key | default | description |
+| CONFIG KEY | DEFAULT | DESCRIPTION |
 |---|---|---|
-| `source` | `"directory"` | `"directory"` for local files, `"urls"` for streaming |
-| `path` | — | path to episode folder (directory mode) |
-| `urls` | `[]` | list of video urls (urls mode) |
-| `mode` | `"idle"` | see below |
+| `SOURCE` | `"DIRECTORY"` | `"DIRECTORY"` FOR LOCAL FILES, `"URLS"` FOR STREAMING |
+| `PATH` | — | PATH TO EPISODE FOLDER (DIRECTORY MODE) |
+| `URLS` | `[]` | LIST OF VIDEO URLS (URLS MODE) |
+| `MODE` | `"IDLE"` | SEE BELOW |
 
-### modes
+### MODES
 
-| mode | behavior |
+| MODE | BEHAVIOR |
 |---|---|
-| `idle` | video plays whenever claude is working or idle — pauses only when you need to respond (permission request). **recommended for most people.** |
-| `always-busy` | video plays only when claude is actively running a tool or thinking — pauses during idle + prompting. good if you want the video as a "claude is busy" indicator. |
+| `IDLE` | VIDEO PLAYS WHENEVER CLAUDE IS WORKING OR IDLE — PAUSES ONLY WHEN YOU NEED TO RESPOND (PERMISSION REQUEST). **RECOMMENDED FOR MOST PEOPLE.** |
+| `ALWAYS-BUSY` | VIDEO PLAYS ONLY WHEN CLAUDE IS ACTIVELY RUNNING A TOOL OR THINKING — PAUSES DURING IDLE + PROMPTING. GOOD IF YOU WANT THE VIDEO AS A "CLAUDE IS BUSY" INDICATOR. |
 
-## how state tracking works
+## HOW STATE TRACKING WORKS
 
 ```
-~/.claude-play/
-├── config.json          # your video config
-├── playback.json        # current episode + position (auto-managed)
-└── sessions/
-    ├── <session-id>.json  # one file per active claude code session
+~/.CLAUDE-PLAY/
+├── CONFIG.JSON          # YOUR VIDEO CONFIG
+├── PLAYBACK.JSON        # CURRENT EPISODE + POSITION (AUTO-MANAGED)
+└── SESSIONS/
+    ├── <SESSION-ID>.JSON  # ONE FILE PER ACTIVE CLAUDE CODE SESSION
     └── ...
 ```
 
-each session file contains `{"state": "busy"|"idle"|"prompting", ...}`. the daemon watches this directory for changes and reacts instantly via [watchdog](https://github.com/gorakhargosh/watchdog). stale sessions (crashed without cleanup) are automatically pruned.
+EACH SESSION FILE CONTAINS `{"STATE": "BUSY"|"IDLE"|"PROMPTING", ...}`. THE DAEMON WATCHES THIS DIRECTORY FOR CHANGES AND REACTS INSTANTLY VIA [WATCHDOG](HTTPS://GITHUB.COM/GORAKHARGOSH/WATCHDOG). STALE SESSIONS (CRASHED WITHOUT CLEANUP) ARE AUTOMATICALLY PRUNED.
 
 ---
 
-personally i use this to watch [one pace](https://onepace.net) while coding. highly recommend.
+PERSONALLY I USE THIS TO WATCH [ONE PACE](HTTPS://ONEPACE.NET) WHILE CODING. HIGHLY RECOMMEND.
